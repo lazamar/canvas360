@@ -15,19 +15,16 @@
 	<p>Frame: <span id="frame-number"></span></p>
 	<canvas id="canvas" width="1920" height="1080" style="border:1px solid #d3d3d3;"></canvas>
 	<div>
-		<button id="nxt-frame">Next Frame</button>
-		<button id="reset">Reset</button>
-		<button id="load">Load from file</button>
+		<button id="nxt-frame">Start Recording</button>
+		<button id="reset" class="hidden">Reset Frame</button> <br>
+		<input type="file" id="file-input" />
 	</div>
-	<input type="range"></input>
 	<div>
 		<ul id="pointers-guide">
 		</ul>
 		<div id="console"></div>
 	</div>
 	<script src="js/jquery-1.11.0.min.js"></script>
-	<script src="js/jquery-ui.js"></script>
-	<script src="js/rangeslider.js"></script>
 	<script src="js/canvas360.js"></script>
 	<script>
 		// window.onload = function() {
