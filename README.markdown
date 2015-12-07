@@ -1,33 +1,19 @@
-# 360 Image Slider
+# Canvas 360
+There is no slider. Drag the image to rotate it.
 
-The 360 Image Slider was a experimental project, which I worked on when I was writing a javascript tutorial for .net Magazine (issue #224).
-Luckily the tutorial was pretty well received, so I decided to make it open source, and create a git repository to allow others to collaborate and help to make it awesome :)
+# Example
+There is an example file with clicks working on frame 35 (check the indicator in the top-left corner of the page for frame number). Just click *Choose file* and load it to see how it is.
 
-## Credits
+# Recording click areas
+Click start recoriding and select the clicking area for each marker.
+To select an area drag from the top left corner of the area till the bottom right corner, then release the mouse.
 
-The 360 Image Slider was originally created by Róbert Pataki for a JavaScript tutorial for .net Magazine (issue #224).
+Click *Reset Frame* to start recording again.
 
-## License
+#Saving changes.
+Once you have recorded the last frame (frame 35), a download button will appear at the end of the page. Download the file.
+Now just the clicks will be live and you can load the file into the demo from the *Choose file* button.
 
-**(The MIT License)**
 
-Copyright (c) 2012 Róbert Pataki heartcode@robertpataki.com;
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-'Software'), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# Changes
+Once all clicks are recorded I can make it look nicer and remove this Recording functionality so that it is ready for the client to see.
