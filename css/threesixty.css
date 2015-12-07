@@ -39,7 +39,7 @@ input{
 	cursor: grab;
   cursor: -webkit-grab;
 	box-shadow: 0px 0px 100px -10px black;
-	display: block;
+	/*display: block;*/
 	margin-bottom: 50px;
 }
 #canvas:active{
