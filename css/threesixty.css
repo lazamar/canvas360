@@ -1,106 +1,75 @@
-/*
-	Sets the style of the image slider wrapper <div> to be centered horizontally and vertically.
-	It also sets its default dimensions and the overflowing hidden (to fix the IE image positioning bug).
-*/
-#threesixty {
-	position:absolute;
-	/* This one fixes the IE positioning bug */
-	overflow:hidden;
-	top:50%;
-	left:50%;
-	width:960px;
-	height:540px;
-	margin-left:-480px;
-	margin-top:-270px;
+body{
+	font-size: 25px;
 }
-/*
-	Defines the criteria for the max. 1024px wide tablets portrait mode and sets the image slider dimensions and centering according to it.
-*/
-@media	screen and (max-device-width: 1024px) and (orientation:portrait) {
-	#threesixty {
-		width:720px;
-		height:450px;
-		margin-left:-360px;
-		margin-top:-225px;
-	}
+p{
+	font-size: 25px;
 }
-/*
-	Defines the criteria of the max. 480px wide mobiles' landscape mode and sets the image slider dimensions and centering according to it.
-*/
-@media	screen and (max-device-width: 480px) and (orientation:landscape),
-				screen and (-webkit-min-device-pixel-ratio: 2) and (orientation:landscape) {
-	#threesixty {
-		width:360px;
-		height:225px;
-		margin-left:-180px;
-		margin-top:-113px;
-	}
+#link1{
+	position: absolute;
+	top: 51%;
+	left: 50%;
+	color: black;
+	z-index: 10;
 }
-/*
-	Defines the criteria of the max. 480px wide mobiles' portrait mode and sets the image slider dimensions and centering according to it.
-*/
-@media	screen and (max-device-width: 480px) and (orientation:portrait),
-				screen and (-webkit-min-device-pixel-ratio: 2) and (orientation:portrait) {
-	#threesixty {
-		width:320px;
-		height:200px;
-		margin-left:-160px;
-		margin-top:-100px;
-	}
+
+button{
+	font-size: 40px;
 }
-/*
-	Makes the image slider invisible by default
-*/
-#threesixty_images {
-	display: none;
+
+#pointers-guide{
+	float: left;
+	margin-right: 50px;
 }
-/*
-	Sets every image in the slider to be absolute positioned and dynamically sized.
-*/
-#threesixty img {
-	position:absolute;
-	/* This one fixes the IE positioning bug */
-	top:0;
-	width:100%;
-	height:auto;
+#pointers-guide li{
+		font-size: 30px;
 }
-/*
-	Sets the style of the visible current frame of the image slider animation
-*/
-.current-image {
-	visibility:visible;
-	width:100%;
+
+#console{
+	min-width: 500px;
+	font-size: 25px;
 }
-/*
-	Sets the style of the visible "previous" frame of the image slider animation
-*/
-.previous-image {
+
+#modal{
+	width: 100%;
+	width: 100vw;
+	height: 100%;
+	height: 100vh;
 	visibility:hidden;
-	width:0;
+  opacity:0;
+  transition:visibility 0s linear 0.5s,opacity 0.5s linear;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: rgba(0,0,0,0.7);
+	z-index: 10;
+	transition: all .8s ease;
 }
-/*
-	Sets the dimensions of the CanvasLoader placeholder <div>, it also centeres it horizontally and vertically inside the wrapper and makes it invisible by default
-*/
-#spinner {
-	position:absolute;
-	left:50%;
-	top:50%;
-	width:90px;
-	height:90px;
-	margin-left:-45px;
-	margin-top:-50px;
-	display:none;
+
+#demo-img{
+	height: 90%;
+	width: auto;
+	position: absolute;
+	margin: auto;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	will-change: transform;
+	transform: translateY(-250px);
+	transition: all .8s ease;
 }
-/*
-	Sets the style of the percentage <span> of the preloader by setting its dimensions and centering it horizontally and vertically 
-*/
-#spinner span {
-	position:absolute;
-	top:50%;
-	width:100%;
-	color:#333;
-	font:0.8em Arial, Verdana, sans;
-	text-align:center;
-	line-height:0.6em;
-	margin-top:-0.3em;
+
+.rangeslider, input[type='range'] {
+  max-width: 400px;
+}
+
+.rangeslider__handle {
+  border-radius: 22px;
+  min-width: 62px;
+  line-height: 42px;
+  text-align: center;
+}
+
+.rangeslider__handle:after {
+	background: 0;
 }

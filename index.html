@@ -6,17 +6,40 @@
 	<title>360</title>
 	<link rel="stylesheet" href="css/reset.css" media="screen" type="text/css" />
 	<link rel="stylesheet" href="css/threesixty.css" media="screen" type="text/css" />
+	<link rel="stylesheet" href="css/rangeslider.css" media="screen" type="text/css" />
 </head>
 <body>
-	<div id="threesixty">
-		<div id="spinner">
-			<span>0%</span>
-		</div>
-		<ol id="threesixty_images"></ol>
+	<div id="modal">
+		<img id="demo-img">
 	</div>
-	
-	<script src="js/heartcode-canvasloader-min.js"></script>
+	<a id="download-link" download>Download as image</a>
+	<p>Frame: <span id="frame-number"></span></p>
+	<canvas id="canvas" width="1920" height="1080" style="border:1px solid #d3d3d3;"></canvas>
+	<div>
+		<button id="nxt-frame">Next Frame</button>
+		<button id="reset">Reset</button>
+		<button id="load">Load from file</button>
+	</div>
+	<input type="range"></input>
+	<div>
+		<ul id="pointers-guide">
+		</ul>
+		<div id="console"></div>
+	</div>
 	<script src="js/jquery-1.11.0.min.js"></script>
-	<script src="js/threesixty.js"></script>
+	<script src="js/jquery-ui.js"></script>
+	<script src="js/rangeslider.js"></script>
+	<script src="js/canvas360.js"></script>
+	<script>
+		// window.onload = function() {
+		//     var c = document.getElementById("myCanvas");
+		//     var ctx = c.getContext("2d");
+		// 		img = new Image();
+		// 		img.src = "img/360_Backplate000 copy.jpg";
+		// 		img.onload = function () {
+		//     	ctx.drawImage(img, 0, 0);
+		// 		}
+		// }
+	</script>
 </body>
 </html>

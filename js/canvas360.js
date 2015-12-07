@@ -1,0 +1,265 @@
+/*globals $, document, readyIcons*/
+$(document).ready(function () {
+  "use strict";
+  var images = [],
+    icons = [],
+    iconFolders = [
+      "01_David_Mexico",
+      "02_Spa",
+      "03_Family_Pool",
+      "04_Feature_Pool",
+      "05_VIP_Pool",
+      "06_Residence_Pool",
+      "07_Townhouse_Villas",
+      "08_Conference_Arrival",
+      "09_Hotel_Arrival",
+      "10_Residence_Arrival",
+      "11_Beach",
+      "12_PHT_ Deck",
+      "13_Speciality_Restaurant"
+    ],
+    $canvas = $('canvas'),
+    currentFrame,
+    out = document.querySelector("#console"),
+    frameNo = document.querySelector('#frame-number'),
+    demoImage = document.querySelector("#demo-img"),
+    modal = document.querySelector("#modal"),
+    dragging = false,
+    draggingDistance = 30;
+
+  function output(text) {
+    var p = document.createElement("p");
+    p.innerHTML = text;
+    out.appendChild(p);
+  }
+
+  function clearOutput() {
+    out.innerHTML = '';
+  }
+
+  function drawFrame(frame, canvasElement) {
+    var ctx = canvasElement.getContext("2d"),
+      i;
+    ctx.drawImage(images[frame], 0, 0);
+    for (i = 0; i < icons.length; i++) {
+      ctx.drawImage(icons[i][frame].img, 0, 0);
+    }
+  }
+
+  function loadImages() {
+    var i, j, prefix;
+    //initialise icons
+    for (i = 0; i < iconFolders.length; i++) {
+      icons[i] = [];
+    }
+    //Load frame images
+    for (i = 0; i < 36; i++) {
+      images[i] = new Image();
+      images[i].src = "img/360_Backplate00" + i + " copy.jpg";
+
+      for (j = 0; j < iconFolders.length; j++) {
+        icons[j][i] = {};
+        icons[j][i].img = new Image();
+        prefix = i > 9 ? "_00" : "_000";
+        icons[j][i].img.src = "img/Icons/" + iconFolders[j] + "/" + iconFolders[j] + prefix + i + ".png";
+      }
+    }
+    drawFrame(0, document.querySelector("canvas"));
+  }
+
+  function highlightInGuide(pointerNo) {
+    if (pointerNo > 0) {
+      $("#pointers-guide li:nth-child(" + pointerNo + ")")[0].style.fontWeight = "normal";
+    }
+    $("#pointers-guide li:nth-child(" + (pointerNo + 1) + ")")[0].style.fontWeight = "bold";
+  }
+
+  function showPointersGuide() {
+    var i,
+      frag = document.createDocumentFragment(),
+      li,
+      guide;
+    for (i = 0; i < iconFolders.length; i++) {
+      li = document.createElement("li");
+      li.id = iconFolders[i];
+      li.innerHTML = iconFolders[i];
+      frag.appendChild(li);
+    }
+    guide = document.querySelector("#pointers-guide");
+    while (guide.firstChild) {
+      guide.removeChild(guide.firstChild);
+    }
+    guide.appendChild(frag);
+    highlightInGuide(0);
+  }
+
+
+
+  function nxtFrame(canvasElement, prevFrame) {
+    if (currentFrame === undefined) {
+      currentFrame = 0;
+    } else if (prevFrame) {
+      currentFrame = Math.abs((currentFrame - 2) % 36);
+    } else {
+      currentFrame = Math.abs((currentFrame + 1) % 36);
+    }
+    drawFrame(currentFrame, canvasElement);
+    frameNo.innerHTML = currentFrame;
+  }
+
+  function getPosition(event, canvasElement) {
+    var x,
+      y,
+      mouseX,
+      mouseY;
+    if (event.x !== undefined && event.y !== undefined) {
+      x = event.x;
+      y = event.y;
+    } else {
+      x = event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+      y = event.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+    }
+    x -= canvasElement.offsetLeft;
+    y -= canvasElement.offsetTop;
+    x = x - window.pageXOffset;
+    y = y - window.pageYOffset;
+    mouseX = x;
+    mouseY = y;
+    return {
+      x: mouseX,
+      y: mouseY
+    };
+  }
+
+  function stopRecording() {
+    $canvas.off("mousedown");
+    $canvas.off("mouseup");
+  }
+
+  function startRecording() {
+    var currentPointer = 0;
+    showPointersGuide();
+    clearOutput();
+    $canvas.on("mousedown", function canvasMouseDown(event) {
+      var pos = getPosition(event, this);
+      icons[currentPointer][currentFrame].x = pos.x;
+      icons[currentPointer][currentFrame].y = pos.y;
+    });
+
+    $canvas.on("mouseup", function canvasMouseUp(event) {
+      var pos = getPosition(event, this);
+      icons[currentPointer][currentFrame].w = pos.x - icons[currentPointer][currentFrame].x;
+      icons[currentPointer][currentFrame].h = pos.y - icons[currentPointer][currentFrame].y;
+
+      output("Recorded data for " + iconFolders[currentPointer] + " for frame " + currentFrame);
+      if (currentPointer + 1 < icons.length) {
+        currentPointer += 1;
+        highlightInGuide(currentPointer);
+      } else if (currentFrame < 35) {
+        stopRecording();
+        output("Frame finished.");
+      } else {
+        stopRecording();
+        output("Everything finished");
+        output(JSON.stringify(icons));
+      }
+    });
+  }
+
+  $("#nxt-frame").on("mousedown", function () {
+    // stopRecording();
+    nxtFrame(document.querySelector("canvas"));
+    // startRecording();
+  });
+
+  $("#reset").on("mousedown", function () {
+    stopRecording();
+    startRecording();
+  });
+
+  $("#load").on("mousedown", function () {
+    var stag = document.createElement("script");
+    stag.src = "js/icons.js";
+    document.body.appendChild(stag);
+    stag.onload = function () {
+      icons = readyIcons;
+    };
+    currentFrame = 1;
+    drawFrame(1, document.querySelector("canvas"));
+  });
+
+  function checkDragging(event) {
+    var lastCheck = new Date(),
+      lastPosition = getPosition(event, event.target),
+      diff,
+      currPos;
+    dragging = true;
+    checkDragging = function (event) {
+      if (new Date() - lastCheck > 50) {
+        lastCheck = new Date();
+        if (dragging === true) {
+          currPos = getPosition(event, event.target);
+          diff = lastPosition.x - currPos.x;
+        } else {
+          dragging = true;
+          lastPosition = getPosition(event, event.target);
+          diff = 0;
+        }
+        if (diff > draggingDistance) {
+          console.log("obj");
+          currentFrame = currentFrame + 1;
+          nxtFrame(event.target);
+        } else if (diff < -draggingDistance) {
+          currentFrame = currentFrame + 1;
+          nxtFrame(event.target, true);
+          lastPosition = currPos;
+        }
+      }
+    };
+    checkDragging(event);
+  }
+  //When in standby, this is the function that will be handling the canvas
+  function handleMouseDown(event) {
+    var i,
+      ico,
+      pos = getPosition(event, this),
+      pointerClick = false;
+    //Check if the click was overy any of the pointers
+    for (i = 0; i < icons.length; i++) {
+      ico = icons[i][currentFrame];
+      if (pos.x > ico.x && pos.x < ico.x + ico.w && pos.y > ico.y && pos.y < ico.y + ico.h) {
+        output(iconFolders[i]);
+        //Load corresponding image and show modal.
+        demoImage.src = "img/Icons/" + iconFolders[i] + "/" + iconFolders[i] + ".jpg";
+        demoImage.style.transform = "translateY(0px)";
+        modal.style.visibility = "visible";
+        modal.style.opacity = 1;
+        pointerClick = true;
+        break;
+      }
+    }
+    if (!pointerClick) {
+      $canvas.mousemove(checkDragging);
+      $canvas.on("mouseup", function quitDragging() {
+        $canvas.off('mousemove');
+        dragging = false;
+      });
+    }
+  }
+  $canvas.on("mousedown", handleMouseDown);
+
+  $('#modal').on("mousedown", function () {
+    demoImage.style.transform = "translateY(-250px)";
+    this.style.opacity = 0;
+    this.style.visibility = "hidden";
+  });
+
+
+  loadImages();
+});
+
+function download(link) {
+  window.event.preventDefault();
+  link.href = document.getElementById("canvas").toDataURL();
+  link.download = "image" + currentFrame;
+}

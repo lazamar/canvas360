@@ -12,7 +12,7 @@ $(document).ready(function () {
 			// Stores the pointer ending X position for the pointer tracking
 			pointerEndPosX = 0,
 			// Stores the distance between the starting and ending pointer X position in each time period we are tracking the pointer
-			pointerDistance = 0,
+			pointerDistance = 1000,
 
 			// The starting time of the pointer tracking period
 			monitorStartTime = 0,
@@ -24,9 +24,9 @@ $(document).ready(function () {
 			speedMultiplier = 10,
 			// CanvasLoader instance variable
 			spinner,
-	
+
 			// Stores the total amount of images we have in the sequence
-			totalFrames = 180,
+			totalFrames = 35,
 			// The current frame value of the image slider animation
 			currentFrame = 0,
 			// Stores all the loaded image objects
@@ -48,7 +48,7 @@ $(document).ready(function () {
 				speed: 4
 			},
 			fakePointerTimer = 0;
-	
+
 	/**
 	* Adds a "spiral" shaped CanvasLoader instance to the #spinner div
 	*/
@@ -65,7 +65,7 @@ $(document).ready(function () {
 		// We use the jQuery fadeIn method to slowly fade in the preloader
 		$("#spinner").fadeIn("slow");
 	};
-	
+
 	/**
 	* Creates a new <li> and loads the next image in the sequence inside it.
 	* With jQuery we add the "load" event handler to the image, so when it's successfully loaded, we call the "imageLoaded" function.
@@ -74,7 +74,7 @@ $(document).ready(function () {
 		// Creates a new <li>
 		var li = document.createElement("li");
 		// Generates the image file name using the incremented "loadedImages" variable
-		var imageName = "img/threesixty_" + (loadedImages + 1) + ".jpg";
+		var imageName = "img/360_Backplate00" + (loadedImages + 1) + " copy.jpg";
 		/*
 			Creates a new <img> and sets its src attribute to point to the file name we generated.
 			It also hides the image by applying the "previous-image" CSS class to it.
@@ -93,7 +93,7 @@ $(document).ready(function () {
 			imageLoaded();
 		});
 	};
-	
+
 	/**
 	* It handles the image "load" events.
 	* Each time this function is called it checks if all the images have been loaded or it has to load the next one.
@@ -123,7 +123,7 @@ $(document).ready(function () {
 			loadImage();
 		}
 	};
-	
+
 	/**
 	* Displays the images with the "swooshy" spinning effect.
 	* As the endFrame is set to -720, the slider will take 4 complete spin before it stops.
@@ -132,7 +132,7 @@ $(document).ready(function () {
 	function showThreesixty () {
 		// Fades in the image slider by using the jQuery "fadeIn" method
 		$images.fadeIn("slow");
-		// Sets the "ready" variable to true, so the app now reacts to user interaction 
+		// Sets the "ready" variable to true, so the app now reacts to user interaction
 		ready = true;
 		// Sets the endFrame to an initial value...
 		endFrame = -720;
@@ -159,7 +159,7 @@ $(document).ready(function () {
 		window.clearInterval(fakePointerTimer);
 		demoMode = false;
 	};
-	
+
 	/*
 		We launch the application by...
 		Adding the preloader, and...
@@ -167,14 +167,14 @@ $(document).ready(function () {
 	addSpinner();
 	// loading the firt image in the sequence.
 	loadImage();
-	
+
 	/**
 	* Renders the image slider frame animations.
 	*/
 	function render () {
 		// The rendering function only runs if the "currentFrame" value hasn't reached the "endFrame" one
 		if(currentFrame !== endFrame)
-		{	
+		{
 			/*
 				Calculates the 10% of the distance between the "currentFrame" and the "endFrame".
 				By adding only 10% we get a nice smooth and eased animation.
@@ -194,7 +194,7 @@ $(document).ready(function () {
 			ticker = 0;
 		}
 	};
-	
+
 	/**
 	* Creates a new setInterval and stores it in the "ticker"
 	* By default I set the FPS value to 60 which gives a nice and smooth rendering in newer browsers
@@ -207,7 +207,7 @@ $(document).ready(function () {
 			ticker = self.setInterval(render, Math.round(1000 / 60));
 		}
 	};
-	
+
 	/**
 	* Hides the previous frame
 	*/
@@ -218,7 +218,7 @@ $(document).ready(function () {
 		*/
 		frames[getNormalizedCurrentFrame()].removeClass("current-image").addClass("previous-image");
 	};
-	
+
 	/**
 	* Displays the current frame
 	*/
@@ -229,7 +229,7 @@ $(document).ready(function () {
 		*/
 		frames[getNormalizedCurrentFrame()].removeClass("previous-image").addClass("current-image");
 	};
-	
+
 	/**
 	* Returns the "currentFrame" value translated to a value inside the range of 0 and "totalFrames"
 	*/
@@ -238,14 +238,14 @@ $(document).ready(function () {
 		if (c < 0) c += (totalFrames - 1);
 		return c;
 	};
-	
+
 	/**
 	* Returns a simple event regarding the original event is a mouse event or a touch event.
 	*/
 	function getPointerEvent(event) {
 		return event.originalEvent.targetTouches ? event.originalEvent.targetTouches[0] : event;
 	};
-	
+
 	/**
 	* Adds the jQuery "mousedown" event to the image slider wrapper.
 	*/
@@ -259,7 +259,7 @@ $(document).ready(function () {
 		// Tells the pointer tracking function that the user is actually dragging the pointer and it needs to track the pointer changes
 		dragging = true;
 	});
-	
+
 	/**
 	* Adds the jQuery "mouseup" event to the document. We use the document because we want to let the user to be able to drag
 	* the mouse outside the image slider as well, providing a much bigger "playground".
@@ -270,7 +270,7 @@ $(document).ready(function () {
 		// Tells the pointer tracking function that the user finished dragging the pointer and it doesn't need to track the pointer changes anymore
 		dragging = false;
 	});
-	
+
 	/**
 	* Adds the jQuery "mousemove" event handler to the document. By using the document again we give the user a better user experience
 	* by providing more playing area for the mouse interaction.
@@ -285,7 +285,7 @@ $(document).ready(function () {
 		// Starts tracking the pointer X position changes
 		trackPointer(event);
 	});
-	
+
 	/**
 	*
 	*/
@@ -299,7 +299,7 @@ $(document).ready(function () {
 		// Tells the pointer tracking function that the user is actually dragging the pointer and it needs to track the pointer changes
 		dragging = true;
 	});
-	
+
 	/**
 	*
 	*/
@@ -309,7 +309,7 @@ $(document).ready(function () {
 		// Starts tracking the pointer X position changes
 		trackPointer(event);
 	});
-	
+
 	/**
 	*
 	*/
@@ -319,7 +319,7 @@ $(document).ready(function () {
 		// Tells the pointer tracking function that the user finished dragging the pointer and it doesn't need to track the pointer changes anymore
 		dragging = false;
 	});
-	
+
 	/**
 	* Tracks the pointer X position changes and calculates the "endFrame" for the image slider frame animation.
 	* This function only runs if the application is ready and the user really is dragging the pointer; this way we can avoid unnecessary calculations and CPU usage.
@@ -329,7 +329,7 @@ $(document).ready(function () {
 		var demoDragging = demoMode;
 
 		if(userDragging || demoDragging) {
-			
+
 			// Stores the last x position of the pointer
 			pointerEndPosX = userDragging ? getPointerEvent(event).pageX : fakePointer.x;
 
