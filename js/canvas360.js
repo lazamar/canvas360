@@ -38,31 +38,16 @@ $(document).ready(function () {
   }
 
   function drawFrame(frame, canvasElement) {
-    var ctx = canvasElement.getContext("2d"),
-      i;
+    var ctx = canvasElement.getContext("2d");
     ctx.drawImage(images[frame], 0, 0);
-    for (i = 0; i < icons.length; i++) {
-      ctx.drawImage(icons[i][frame].img, 0, 0);
-    }
   }
 
   function loadImages() {
-    var i, j, prefix;
-    //initialise icons
-    for (i = 0; i < iconFolders.length; i++) {
-      icons[i] = [];
-    }
+    var i;
     //Load frame images
     for (i = 0; i < 36; i++) {
       images[i] = new Image();
-      images[i].src = "img/360_Backplate00" + i + " copy.jpg";
-
-      for (j = 0; j < iconFolders.length; j++) {
-        icons[j][i] = {};
-        icons[j][i].img = new Image();
-        prefix = i > 9 ? "_00" : "_000";
-        icons[j][i].img.src = "img/Icons/" + iconFolders[j] + "/" + iconFolders[j] + prefix + i + ".png";
-      }
+      images[i].src = "img/img" + i + ".jpg";
     }
     drawFrame(0, document.querySelector("canvas"));
   }
@@ -97,12 +82,14 @@ $(document).ready(function () {
 
   function nxtFrame(canvasElement, prevFrame) {
     if (currentFrame === undefined) {
-      currentFrame = 0;
+      currentFrame = 35;
     } else if (prevFrame) {
-      currentFrame = Math.abs((currentFrame - 2) % 36);
+      currentFrame = Math.abs((35 + currentFrame) % 36);
+      console.log("prev");
     } else {
-      currentFrame = Math.abs((currentFrame + 1) % 36);
+      currentFrame = Math.abs((37 + currentFrame) % 36);
     }
+    console.log(currentFrame);
     drawFrame(currentFrame, canvasElement);
     frameNo.innerHTML = currentFrame;
   }
@@ -202,17 +189,18 @@ $(document).ready(function () {
           diff = lastPosition.x - currPos.x;
         } else {
           dragging = true;
-          lastPosition = getPosition(event, event.target);
           diff = 0;
         }
-        if (diff > draggingDistance) {
-          console.log("obj");
-          currentFrame = currentFrame + 1;
-          nxtFrame(event.target);
-        } else if (diff < -draggingDistance) {
-          currentFrame = currentFrame + 1;
-          nxtFrame(event.target, true);
-          lastPosition = currPos;
+        // If dragged for long enough.
+        if (Math.abs(diff) > draggingDistance) {
+          lastPosition = getPosition(event, event.target);
+          if (diff > 0) { //dragging to the right;
+            console.log("right");
+            nxtFrame(event.target);
+          } else { //dragging to the left;
+            console.log("left");
+            nxtFrame(event.target, true);
+          }
         }
       }
     };
@@ -257,9 +245,3 @@ $(document).ready(function () {
 
   loadImages();
 });
-
-function download(link) {
-  window.event.preventDefault();
-  link.href = document.getElementById("canvas").toDataURL();
-  link.download = "image" + currentFrame;
-}
