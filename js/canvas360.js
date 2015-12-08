@@ -1,10 +1,10 @@
-(function (window, document) {
+/* globals window, document, $, FileReader */
+(function (window, document, $, FileReader, console) {
   'use strict';
 
-  /*globals $, document, readyIcons, FileReader*/
   var zoom = 0.5;
-  document.addEventListener('DOMContentLoaded', function () {
 
+  document.addEventListener('DOMContentLoaded', function () {
     var images = [],
       icons = [],
       iconFolders = [
@@ -216,7 +216,7 @@
         icons[currentPointer][currentFrame].y = pos.y;
       });
 
-      $canvas.on('mouseup', function canvasMouseUp(event) {
+      $canvas.on('mouseup', function canvasMouseUp (event) {
         var pos = getPosition(event, this);
         icons[currentPointer][currentFrame].w = pos.x - icons[currentPointer][currentFrame].x;
         icons[currentPointer][currentFrame].h = pos.y - icons[currentPointer][currentFrame].y;
@@ -315,4 +315,5 @@
 
   //To be removed
   window.parent.document.body.style.zoom = zoom;
-}(window, document));
+
+}(window, document, jQuery, FileReader, console));
