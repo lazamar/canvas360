@@ -1,38 +1,39 @@
 /*globals $, document, readyIcons, FileReader*/
 var zoom = 0.5;
-$(document).ready(function () {
-  "use strict";
+document.addEventListener("DOMContentLoaded", function () {
+  'use strict';
+
   var images = [],
     icons = [],
     iconFolders = [
-      "01_David_Mexico",
-      "02_Spa",
-      "03_Family_Pool",
-      "04_Feature_Pool",
-      "05_VIP_Pool",
-      "06_Residence_Pool",
-      "07_Townhouse_Villas",
-      "08_Conference_Arrival",
-      "09_Hotel_Arrival",
-      "10_Residence_Arrival",
-      "11_Beach",
-      "12_PHT_ Deck",
-      "13_Speciality_Restaurant"
+      '01_David_Mexico',
+      '02_Spa',
+      '03_Family_Pool',
+      '04_Feature_Pool',
+      '05_VIP_Pool',
+      '06_Residence_Pool',
+      '07_Townhouse_Villas',
+      '08_Conference_Arrival',
+      '09_Hotel_Arrival',
+      '10_Residence_Arrival',
+      '11_Beach',
+      '12_PHT_ Deck',
+      '13_Speciality_Restaurant'
     ],
     $canvas = $('canvas'),
-    canvas = document.querySelector("canvas"),
+    canvas = document.querySelector('canvas'),
     currentFrame,
-    out = document.querySelector("#console"),
+    out = document.querySelector('#console'),
     frameNo = document.querySelector('#frame-number'),
-    demoImage = document.querySelector("#demo-img"),
-    modal = document.querySelector("#modal"),
+    demoImage = document.querySelector('#demo-img'),
+    modal = document.querySelector('#modal'),
     dragging = false,
     draggingDistance = 50,
     checkDragging,
     recording = false;
 
-  function downloadFile() {
-    var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(icons)),
+  function downloadFile () {
+    var data = 'text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(icons)),
       a = document.createElement('a');
     a.href = 'data:' + data;
     a.download = 'data.json';
@@ -40,7 +41,7 @@ $(document).ready(function () {
     document.body.appendChild(a);
   }
 
-  function readSingleFile(e) {
+  function readSingleFile (e) {
     var file = e.target.files[0],
       reader;
     if (!file) {
@@ -55,66 +56,73 @@ $(document).ready(function () {
     reader.readAsText(file);
   }
 
-  function output(text) {
-    var p = document.createElement("p");
+  function output (text) {
+    var p = document.createElement('p');
     p.innerHTML = text;
     out.appendChild(p);
   }
 
-  function clearOutput() {
+  function clearOutput () {
     out.innerHTML = '';
   }
 
-  function drawFrame(frame, canvasElement) {
-    var ctx = canvasElement.getContext("2d");
+  function drawFrame (frame, canvasElement) {
+    var ctx = canvasElement.getContext('2d');
     ctx.drawImage(images[frame], 0, 0);
   }
 
-  function loadImages(callback) {
+  function loadImages (callback) {
     var i,
       loadedImages = 0;
+
     //Load frame images
-    function imgloaded() {
+    function imgloaded () {
       loadedImages += 1;
       if (loadedImages === 36) {
         callback();
       }
     }
+
     for (i = 0; i < 36; i++) {
       images[i] = new Image();
-      images[i].src = "img/img" + i + ".jpg";
+      images[i].src = 'img/img' + i + '.jpg';
       images[i].onload = imgloaded;
     }
+
     drawFrame(0, canvas);
   }
 
-  function highlightInGuide(pointerNo) {
+  function highlightInGuide (pointerNo) {
     if (pointerNo > 0) {
-      $("#pointers-guide li:nth-child(" + pointerNo + ")")[0].style.fontWeight = "normal";
+      $('#pointers-guide li:nth-child(' + pointerNo + ')')[0].style.fontWeight = 'normal';
     }
-    $("#pointers-guide li:nth-child(" + (pointerNo + 1) + ")")[0].style.fontWeight = "bold";
+    $('#pointers-guide li:nth-child(' + (pointerNo + 1) + ')')[0].style.fontWeight = 'bold';
   }
 
-  function showPointersGuide() {
+  function showPointersGuide () {
     var i,
       frag = document.createDocumentFragment(),
       li,
       guide;
+
     for (i = 0; i < iconFolders.length; i++) {
-      li = document.createElement("li");
+      li = document.createElement('li');
       li.id = iconFolders[i];
       li.innerHTML = iconFolders[i];
       frag.appendChild(li);
     }
-    guide = document.querySelector("#pointers-guide");
+
+    guide = document.querySelector('#pointers-guide');
+
     while (guide.firstChild) {
       guide.removeChild(guide.firstChild);
     }
+
     guide.appendChild(frag);
     highlightInGuide(0);
   }
 
-  function nxtFrame(canvasElement, prevFrame) {
+  function nxtFrame (canvasElement, prevFrame) {
     if (currentFrame === undefined) {
       currentFrame = 35;
     } else if (prevFrame) {
@@ -126,11 +134,12 @@ $(document).ready(function () {
     frameNo.innerHTML = currentFrame;
   }
 
-  function getPosition(event, canvasElement) {
+  function getPosition (event, canvasElement) {
     var x,
       y,
       mouseX,
       mouseY;
+
     if (event.x !== undefined && event.y !== undefined) {
       x = event.x;
       y = event.y;
@@ -138,19 +147,21 @@ $(document).ready(function () {
       x = event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
       y = event.clientY + document.body.scrollTop + document.documentElement.scrollTop;
     }
+
     x -= canvasElement.offsetLeft;
     y -= canvasElement.offsetTop;
     x = x - window.pageXOffset;
     y = y - window.pageYOffset;
     mouseX = x;
     mouseY = y;
+
     return {
       x: mouseX,
       y: mouseY
     };
   }
 
-  function handleMouseDown(event) {
+  function handleMouseDown (event) {
     var i,
       ico,
       pos = getPosition(event, this),
@@ -159,71 +170,75 @@ $(document).ready(function () {
     //Take zoom into account
     pos.x = pos.x * (1 / zoom);
     pos.y = pos.y * (1 / zoom);
+
     //Check if the click was overy any of the pointers
     for (i = 0; i < icons.length; i++) {
       ico = icons[i][currentFrame];
       if (pos.x > ico.x && pos.x < ico.x + ico.w && pos.y > ico.y && pos.y < ico.y + ico.h) {
         output(iconFolders[i]);
         //Load corresponding image and show modal.
-        demoImage.src = "img/Icons/" + iconFolders[i] + "/" + iconFolders[i] + ".jpg";
-        demoImage.style.transform = "translateY(0px)";
-        modal.style.visibility = "visible";
+        demoImage.src = 'img/Icons/' + iconFolders[i] + '/' + iconFolders[i] + '.jpg';
+        demoImage.style.transform = 'translateY(0px)';
+        modal.style.visibility = 'visible';
         modal.style.opacity = 1;
         pointerClick = true;
         break;
       }
     }
+
     if (!pointerClick) {
       $canvas.mousemove(checkDragging);
-      $canvas.on("mouseup", function quitDragging() {
+      $canvas.on('mouseup', function quitDragging () {
         $canvas.off('mousemove');
         dragging = false;
       });
     }
   }
 
-  function stopRecording() {
-    $canvas.off("mousedown");
-    $canvas.off("mouseup");
+  function stopRecording () {
+    $canvas.off('mousedown');
+    $canvas.off('mouseup');
   }
 
-  function startRecording() {
+  function startRecording () {
     var currentPointer = 0;
+
     showPointersGuide();
     clearOutput();
-    $('#reset')[0].className = "";
-    $canvas.off("mousedown");
-    $canvas.on("mousedown", function canvasMouseDown(event) {
+    $('#reset')[0].className = '';
+    $canvas.off('mousedown');
+
+    $canvas.on('mousedown', function canvasMouseDown (event) {
       var pos = getPosition(event, this);
       icons[currentPointer][currentFrame].x = pos.x;
       icons[currentPointer][currentFrame].y = pos.y;
     });
 
-    $canvas.on("mouseup", function canvasMouseUp(event) {
+    $canvas.on('mouseup', function canvasMouseUp(event) {
       var pos = getPosition(event, this);
       icons[currentPointer][currentFrame].w = pos.x - icons[currentPointer][currentFrame].x;
       icons[currentPointer][currentFrame].h = pos.y - icons[currentPointer][currentFrame].y;
 
-      output("Recorded data for " + iconFolders[currentPointer] + " for frame " + currentFrame);
+      output('Recorded data for ' + iconFolders[currentPointer] + ' for frame ' + currentFrame);
       if (currentPointer + 1 < icons.length) {
         currentPointer += 1;
         highlightInGuide(currentPointer);
       } else if (currentFrame < 35) {
         stopRecording();
-        output("Frame finished.");
+        output('Frame finished.');
       } else {
         stopRecording();
-        $('#reset')[0].className = "hidden";
-        $('#nxt-frame').innerHTML = "Start Recording";
-        $canvas.on("mousedown", handleMouseDown);
-        output("Everything finished");
+        $('#reset')[0].className = 'hidden';
+        $('#nxt-frame').innerHTML = 'Start Recording';
+        $canvas.on('mousedown', handleMouseDown);
+        output('Everything finished');
         output(JSON.stringify(icons));
         downloadFile();
       }
     });
   }
 
-  $("#nxt-frame").on("mousedown", function () {
+  $('#nxt-frame').on('mousedown', function () {
     if (!recording) {
       var i, j;
       //prepare icons object
@@ -237,7 +252,7 @@ $(document).ready(function () {
       nxtFrame(canvas);
       startRecording();
       recording = true;
-      this.innerHTML = "Next Frame";
+      this.innerHTML = 'Next Frame';
     } else {
       stopRecording();
       nxtFrame(canvas);
@@ -245,18 +260,19 @@ $(document).ready(function () {
     }
   });
 
-  $("#reset").on("mousedown", function () {
+  $('#reset').on('mousedown', function () {
     stopRecording();
     startRecording();
   });
 
-  $("#file-input").on("change", readSingleFile);
+  $('#file-input').on('change', readSingleFile);
 
   checkDragging = (function () {
     var lastCheck = new Date(),
       lastPosition = {x: 0},
       diff,
       currPos;
+
     return function (event) {
       if (new Date() - lastCheck > 0) {
         lastCheck = new Date();
@@ -281,12 +297,12 @@ $(document).ready(function () {
   }());
   //When in standby, this is the function that will be handling the canvas
 
-  $canvas.on("mousedown", handleMouseDown);
+  $canvas.on('mousedown', handleMouseDown);
 
-  $('#modal').on("mousedown", function () {
-    demoImage.style.transform = "translateY(-250px)";
+  $('#modal').on('mousedown', function () {
+    demoImage.style.transform = 'translateY(-250px)';
     this.style.opacity = 0;
-    this.style.visibility = "hidden";
+    this.style.visibility = 'hidden';
   });
 
 
