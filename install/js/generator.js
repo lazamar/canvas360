@@ -17,13 +17,17 @@
         });
       });
     } else if (item.isDirectory) {
-      files[item.name] = [];
+      if(files[item.name] === undefined) {
+        files[item.name] = [];
+      }
       // Get folder contents
       dirReader = item.createReader();
       dirReader.readEntries(function (entries) {
         for (i = 0; i < entries.length; i++) {
           traverseFileTree(entries[i]);
         }
+      }, function (error) {
+        console.error(error.code, error.message);
       });
     }
 
@@ -46,7 +50,17 @@
   }
 
   function detectBounds () {
-    var name, n, frame;
+    var name, n, frame,
+      filesCount = 0,
+      filesPos = 0;
+
+    NProgress.start();
+
+    for(name in files) {
+      filesCount += files[name].length;
+    }
+
+    console.log(filesCount);
 
     for(name in files) {
       for(n in files[name]) {
@@ -100,4 +114,3 @@
   }
 
 }(document));
-;
