@@ -1,27 +1,15 @@
-/* globals window, document, $, FileReader */
-(function (window, document, $, FileReader, console) {
+/* globals window, document, $, console */
+(function (window, document, $, console) {
   'use strict';
 
-  var zoom = 0.5;
+  var xmlHttp,
+      config,
+      zoom = 0.5,
+      iconFolders;
 
   document.addEventListener('DOMContentLoaded', function () {
     var images = [],
       icons = [],
-      iconFolders = [
-        '01_David_Mexico',
-        '02_Spa',
-        '03_Family_Pool',
-        '04_Feature_Pool',
-        '05_VIP_Pool',
-        '06_Residence_Pool',
-        '07_Townhouse_Villas',
-        '08_Conference_Arrival',
-        '09_Hotel_Arrival',
-        '10_Residence_Arrival',
-        '11_Beach',
-        '12_PHT_ Deck',
-        '13_Speciality_Restaurant'
-      ],
       $canvas = $('canvas'),
       canvas = document.querySelector('canvas'),
       currentFrame,
@@ -34,38 +22,10 @@
       checkDragging,
       recording = false;
 
-    function downloadFile () {
-      var data = 'text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(icons)),
-        a = document.createElement('a');
-      a.href = 'data:' + data;
-      a.download = 'data.json';
-      a.innerHTML = 'Download coordinates';
-      document.body.appendChild(a);
-    }
-
-    function readSingleFile (e) {
-      var file = e.target.files[0],
-        reader;
-      if (!file) {
-        return;
-      }
-      reader = new FileReader();
-      reader.onload = function (e) {
-        var contents = e.target.result;
-        icons = JSON.parse(contents);
-        console.log(icons);
-      };
-      reader.readAsText(file);
-    }
-
     function output (text) {
       var p = document.createElement('p');
       p.innerHTML = text;
       out.appendChild(p);
-    }
-
-    function clearOutput () {
-      out.innerHTML = '';
     }
 
     function drawFrame (frame, canvasElement) {
@@ -164,23 +124,27 @@
     }
 
     function handleMouseDown (event) {
-      var i,
-        ico,
-        pos = getPosition(event, this),
+      var iconFolder,
+        icon,
+        clickPos = getPosition(event, this),
         pointerClick = false;
 
       //Take zoom into account
-      pos.x = pos.x * (1 / zoom);
-      pos.y = pos.y * (1 / zoom);
+      clickPos.x *= 1 / zoom;
+      clickPos.y *= 1 / zoom;
 
       //Check if the click was overy any of the pointers
-      for (i = 0; i < icons.length; i++) {
-        ico = icons[i][currentFrame];
-        if (pos.x > ico.x && pos.x < ico.x + ico.w && pos.y > ico.y && pos.y < ico.y + ico.h) {
-          output(iconFolders[i]);
-          //Load corresponding image and show modal.
-          demoImage.src = 'img/Icons/' + iconFolders[i] + '/' + iconFolders[i] + '.jpg';
-          demoImage.style.transform = 'translateY(0px)';
+      for (iconFolder in config[currentFrame]) {
+        icon = config[currentFrame][iconFolder];
+
+        // marker not in this frame
+        if(icon === null) {
+          continue;
+        }
+
+        if (clickPos.x >= icon.x1 && clickPos.x <= icon.x2 && clickPos.y >= icon.y1 && clickPos.y <= icon.y2) {
+          demoImage.src = 'img/Icons/'+iconFolder+'/'+iconFolder+'.jpg';
+          demoImage.style.transform = 'translateY(0)';
           modal.style.visibility = 'visible';
           modal.style.opacity = 1;
           pointerClick = true;
@@ -195,49 +159,6 @@
           dragging = false;
         });
       }
-    }
-
-    function stopRecording () {
-      $canvas.off('mousedown');
-      $canvas.off('mouseup');
-    }
-
-    function startRecording () {
-      var currentPointer = 0;
-
-      showPointersGuide();
-      clearOutput();
-      $('#reset')[0].className = '';
-      $canvas.off('mousedown');
-
-      $canvas.on('mousedown', function canvasMouseDown (event) {
-        var pos = getPosition(event, this);
-        icons[currentPointer][currentFrame].x = pos.x;
-        icons[currentPointer][currentFrame].y = pos.y;
-      });
-
-      $canvas.on('mouseup', function canvasMouseUp (event) {
-        var pos = getPosition(event, this);
-        icons[currentPointer][currentFrame].w = pos.x - icons[currentPointer][currentFrame].x;
-        icons[currentPointer][currentFrame].h = pos.y - icons[currentPointer][currentFrame].y;
-
-        output('Recorded data for ' + iconFolders[currentPointer] + ' for frame ' + currentFrame);
-        if (currentPointer + 1 < icons.length) {
-          currentPointer += 1;
-          highlightInGuide(currentPointer);
-        } else if (currentFrame < 35) {
-          stopRecording();
-          output('Frame finished.');
-        } else {
-          stopRecording();
-          $('#reset')[0].className = 'hidden';
-          $('#nxt-frame').innerHTML = 'Start Recording';
-          $canvas.on('mousedown', handleMouseDown);
-          output('Everything finished');
-          output(JSON.stringify(icons));
-          downloadFile();
-        }
-      });
     }
 
     $('#nxt-frame').on('mousedown', function () {
@@ -262,13 +183,6 @@
       }
     });
 
-    $('#reset').on('mousedown', function () {
-      stopRecording();
-      startRecording();
-    });
-
-    $('#file-input').on('change', readSingleFile);
-
     checkDragging = (function () {
       var lastCheck = new Date(),
         lastPosition = {x: 0},
@@ -276,7 +190,7 @@
         currPos;
 
       return function (event) {
-        if (new Date() - lastCheck > 0) {
+        if (new Date() - lastCheck > 15) {
           lastCheck = new Date();
           if (dragging === true) {
             currPos = getPosition(event, event.target);
@@ -316,4 +230,10 @@
   //To be removed
   window.parent.document.body.style.zoom = zoom;
 
-}(window, document, jQuery, FileReader, console));
+  xmlHttp = new XMLHttpRequest();
+  xmlHttp.open('GET', 'config.json', false); // false for synchronous request
+  xmlHttp.send(null);
+  config = JSON.parse(xmlHttp.responseText);
+  iconFolders = Object.keys(config[Object.keys(config)[0]]);
+
+}(window, document, jQuery, console));

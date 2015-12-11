@@ -78,6 +78,7 @@
           });
 
           NProgress.set(filesPos/filesCount);
+          console.log((filesPos/filesCount*100)+'%');
 
           return;
         } else {
@@ -112,8 +113,8 @@
     });
   };
 
-  document.querySelector('button').onclick = function () {
-    location.href = 'data:application/octet-stream,'+JSON.stringify(bounds);
+  document.querySelector('#download').onclick = function () {
+    this.href = 'data:application/octet-stream,'+JSON.stringify(bounds);
   }
 
 }(document));
