@@ -60,8 +60,6 @@
       filesCount += files[name].length;
     }
 
-    console.log(filesCount);
-
     for(name in files) {
       for(n in files[name]) {
         frame = files[name][n].path.match(/(\d{4})\.png/);
@@ -78,7 +76,12 @@
             lastOp = new Date();
             detectBounds();
           });
+
+          NProgress.set(filesPos/filesCount);
+
           return;
+        } else {
+          filesPos++;
         }
       }
     }
