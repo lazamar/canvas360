@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml" xmlns:website="http://ogp.me/ns/website" lang="en-GB" itemscope itemtype="http://schema.org/WebPage" >
+  <head>
+    <meta http-equic="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+    <meta charset="utf-8" />
+    <title>360 Config Generator</title>
+    <link rel="stylesheet" href="bower_components/nprogress/nprogress.css" />
+    <style>
+    #canvas-wrapper {
+        width: 90%;
+        height: 700px;
+        margin: 50px auto 0;
+        overflow: hidden;
+    }
+    </style>
+    </head>
+    <body>
+        <a href="#" download="config.json" id="download">Download</a>
+        <pre id="results">[]</pre>
+        <div id="canvas-wrapper">
+            <canvas id="canvas"></canvas>
+        </div>
+
+        <script src="bower_components/nprogress/nprogress.js"></script>
+        <script src="js/bounds-detector.js"></script>
+        <script src="js/generator.js"></script>
+    </body>
+</html>

@@ -2,3 +2,5 @@
 img/.DS_Store
 css/.DS_Store
 js/.DS_Store
+bower_components
+
