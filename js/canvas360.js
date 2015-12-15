@@ -4,7 +4,6 @@
 
   var xmlHttp,
       config,
-      zoom = 0.5,
       iconFolders;
 
   document.addEventListener('DOMContentLoaded', function () {
@@ -16,7 +15,6 @@
       out = document.querySelector('#console'),
       frameNo = document.querySelector('#frame-number'),
       demoImage = document.querySelector('#demo-img'),
-      modal = document.querySelector('#modal'),
       dragging = false,
       draggingDistance = 50,
       checkDragging,
@@ -97,10 +95,7 @@
     }
 
     function getPosition (event, canvasElement) {
-      var x,
-        y,
-        mouseX,
-        mouseY;
+      var x, y;
 
       if (event.x !== undefined && event.y !== undefined) {
         x = event.x;
@@ -112,14 +107,13 @@
 
       x -= canvasElement.offsetLeft;
       y -= canvasElement.offsetTop;
-      x = x - window.pageXOffset;
-      y = y - window.pageYOffset;
-      mouseX = x;
-      mouseY = y;
+
+      x -= window.pageXOffset;
+      y -= window.pageYOffset;
 
       return {
-        x: mouseX,
-        y: mouseY
+        x: x,
+        y: y
       };
     }
 
@@ -128,10 +122,6 @@
         icon,
         clickPos = getPosition(event, this),
         pointerClick = false;
-
-      //Take zoom into account
-      clickPos.x *= 1 / zoom;
-      clickPos.y *= 1 / zoom;
 
       //Check if the click was overy any of the pointers
       for (iconFolder in config[currentFrame]) {
@@ -144,9 +134,7 @@
 
         if (clickPos.x >= icon.x1 && clickPos.x <= icon.x2 && clickPos.y >= icon.y1 && clickPos.y <= icon.y2) {
           demoImage.src = 'img/Icons/'+iconFolder+'/'+iconFolder+'.jpg';
-          demoImage.style.transform = 'translateY(0)';
-          modal.style.visibility = 'visible';
-          modal.style.opacity = 1;
+          document.querySelector('#modal').classList.add('visible');
           pointerClick = true;
           break;
         }
@@ -216,9 +204,7 @@
     $canvas.on('mousedown', handleMouseDown);
 
     $('#modal').on('mousedown', function () {
-      demoImage.style.transform = 'translateY(-250px)';
-      this.style.opacity = 0;
-      this.style.visibility = 'hidden';
+      this.classList.remove('visible');
     });
 
 
@@ -226,9 +212,6 @@
       nxtFrame(canvas, 0);
     });
   });
-
-  //To be removed
-  window.parent.document.body.style.zoom = zoom;
 
   xmlHttp = new XMLHttpRequest();
   xmlHttp.open('GET', 'config.json', false); // false for synchronous request

@@ -77,7 +77,7 @@
             detectBounds();
           });
 
-          NProgress.set(filesPos/filesCount);
+          NProgress.set(Math.round(filesPos / filesCount * 100) / 100);
           console.log((filesPos/filesCount*100)+'%');
 
           return;
@@ -110,6 +110,7 @@
     fileOpEnded(detectBounds);
     fileOpEnded(function () {
       document.querySelector('#results').innerHTML = JSON.stringify(bounds, null, 4);
+      NProgress.done();
     });
   };
 
