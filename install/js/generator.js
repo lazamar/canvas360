@@ -66,11 +66,12 @@
         if(frame) {
           frame = parseInt(frame[1]);
         }
-        if(frame && (bounds[frame] === undefined || bounds[frame][name] === undefined)) {
+        if(frame !== null && (bounds[frame] === undefined || bounds[frame][name] === undefined)) {
           new BOUNDS_DETECTOR(name, frame, files[name][n].blob, function (n, f, b) {
             if(bounds[f] === undefined) {
               bounds[f] = {};
             }
+
             bounds[f][n] = b;
 
             lastOp = new Date();
@@ -78,7 +79,7 @@
           });
 
           NProgress.set(Math.round(filesPos / filesCount * 100) / 100);
-          console.log((filesPos/filesCount*100)+'%');
+          console.log(Math.round(filesPos / filesCount * 100)+'%');
 
           return;
         } else {
