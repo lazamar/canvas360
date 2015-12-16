@@ -1,31 +1,7 @@
 body{
-	font-size: 25px;
 	text-align: center;
 }
-p{
-	font-size: 25px;
-}
-#link1{
-	position: absolute;
-	top: 51%;
-	left: 50%;
-	color: black;
-	z-index: 10;
-}
 
-button{
-	font-size: 40px;
-}
-input{
-	font-size: 40px;
-}
-#pointers-guide{
-	float: left;
-	margin-right: 50px;
-}
-#pointers-guide li{
-	font-size: 30px;
-}
 .hidden {
 	visibility:hidden;
 }
@@ -42,26 +18,27 @@ input{
 	margin-right: -0.25em;
 }
 .vertically-centred {
+	position: relative;
 	display: inline-block;
 	vertical-align: middle;
 	max-width: calc(100% - 4px);
 }
 
+input[type=range] {
+	position: absolute;
+	left: 50%;
+	bottom: 30px;
+	width: 150px;
+	margin-left: -75px;
+}
+
 #canvas{
 	cursor: grab;
 	cursor: -webkit-grab;
-	box-shadow: 0px 0px 100px -10px black;
-	/*display: block;*/
-	margin-bottom: 50px;
 }
 #canvas:active{
 	cursor: grabbing;
 	cursor: -webkit-grabbing;
-}
-
-#console{
-	min-width: 500px;
-	font-size: 25px;
 }
 
 #modal{
@@ -89,30 +66,4 @@ input{
 	left: 0;
 	right: 0;
 	bottom: 0;
-}
-
-.rangeslider, input[type='range'] {
-  max-width: 400px;
-}
-
-.rangeslider__handle {
-  border-radius: 22px;
-  min-width: 62px;
-  line-height: 42px;
-  text-align: center;
-}
-
-.rangeslider__handle:after {
-	background: 0;
-}
-
-body{
-	background: -webkit-radial-gradient(#fff, #ccc); /* Safari 5.1 to 6.0 */
-	background: -o-radial-gradient(#fff, #ccc); /* For Opera 11.6 to 12.0 */
-	background: -moz-radial-gradient(#fff, #ccc); /* For Firefox 3.6 to 15 */
-	background: radial-gradient(#fff, #ccc); /* Standard syntax */
-	min-height: 100%;
-	min-height: 100vh;
-	min-widht: 100%;
-	min-width: 100vw;
 }
